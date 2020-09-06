@@ -6,109 +6,88 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import React, {useState} from 'react'
+import {StyleSheet, View, Text, Button} from 'react-native'
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const URL = 'https://busdue.com'
 
 const App: () => React$Node = () => {
+  const [validationMsg, setValidationMsg] = useState('Waiting')
+  const [validationStatus, setValidationStatus] = useState('')
+  const onConnectPress = () => {
+    fetch(URL)
+      .then((res) => {
+        console.log('**************')
+        console.log(res)
+        console.log('**************')
+        setValidationMsg('Valid certificate, connected.')
+        setValidationStatus('success')
+      })
+      .catch(() => {
+        setValidationMsg('Certificate does not match, connection refused')
+        setValidationStatus('failed')
+      })
+  }
+
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+    <View style={styles.container}>
+      <Text style={styles.title}>React Native SSL Pinning</Text>
+      <Text style={styles.title}>(iOS)</Text>
+      <Text style={styles.header}>Certificate status:</Text>
+      <Text
+        style={[
+          styles.status,
+          validationStatus === 'success' && styles.success,
+          validationStatus === 'failed' && styles.failed,
+        ]}>
+        {validationMsg}
+      </Text>
+      <View style={styles.btnContainer}>
+        <Button title={`Test ${URL}`} onPress={onConnectPress} />
+      </View>
+    </View>
+  )
+}
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
+  title: {
     fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
-  sectionDescription: {
-    marginTop: 8,
+  header: {
+    paddingTop: 46,
     fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
+    textAlign: 'center',
   },
-  highlight: {
-    fontWeight: '700',
+  status: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+  success: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'green',
   },
-});
+  failed: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'red',
+  },
+  btnContainer: {
+    borderWidth: 1,
+    borderColor: 'grey',
+    borderRadius: 4,
+    paddingHorizontal: 16,
+    marginTop: 24,
+  },
+})
 
-export default App;
+export default App
