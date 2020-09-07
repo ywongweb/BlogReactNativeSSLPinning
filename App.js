@@ -7,7 +7,7 @@
  */
 
 import React, {useState} from 'react'
-import {StyleSheet, View, Text, Button} from 'react-native'
+import {StyleSheet, View, Text, Button, Platform} from 'react-native'
 
 const URL = 'https://busdue.com'
 
@@ -32,7 +32,7 @@ const App: () => React$Node = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>React Native SSL Pinning</Text>
-      <Text style={styles.title}>(iOS)</Text>
+      <Text style={styles.title}>({Platform.OS.toUpperCase()})</Text>
       <Text style={styles.header}>Certificate status:</Text>
       <Text
         style={[
